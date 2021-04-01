@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # Import Modules
 try:
-    import os,sys,time,random,urllib.request,itertools,threading,platform,readline
+    import os,sys,time,random,urllib.request,itertools,threading,platform,readline,gzip
 except Exception as F:
     exit("\x1b[1;31m   [!] \x1b[0;32m%s"%(F)+"\x1b[0;39m")
 # Color
@@ -72,12 +72,26 @@ def download_http(url,tgt):
         pass
     done = None
 def indonesia(filedown):
-    url = "https://raw.githubusercontent.com/H-TCM/Hash/main/wordlist.txt"
+    url = "https://raw.githubusercontent.com/MyWay404/Hash/main/wordlist.txt.gz"
     dire = "dictionaries/indonesian/"
     tgt = dire+"wordlist.txt"
     mkdir_if_not_exists("dictionaries/")
     mkdir_if_not_exists(dire)
-    download_http(url,tgt)
+    done = False
+    loading = threading.Thread(target=load)
+    loading.daemon = True
+    loading.start()
+    webFile = gzip.decompress(urllib.request.urlopen(url).read())
+    localFile = open(tgt,"wb")
+    localFile.write(webFile)
+    localFile.close()
+    done = True
+    if done == True:
+        print()
+        sys.stdout.write(B+"\r   [+] "+A+"Succes file saved as "+C+tgt+E+"\n")
+    else:
+        pass
+    done = None
 def download_wordlist_http(filedown):
     mkdir_if_not_exists("dictionaries/")
     list = {
